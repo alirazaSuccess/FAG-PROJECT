@@ -1,0 +1,211 @@
+:root {
+    --bg: #07142a;
+    /* deep navy background */
+    --panel: #071f34;
+    /* slightly lighter */
+    --muted: #9fb0c6;
+    /* subtitle color */
+    --accent: #3db3ff;
+    /* blue for 'Crypto' and primary button */
+    --accent-2: #2b8fe0;
+    /* Dark Blue */
+    --dark-blue: #04132c;
+    /* Fixed: Removed quotes */
+    --white: #ffffff;
+    --rounded: 12px;
+    --max-width: 100%;
+}
+
+.about_main {
+    background-color: var(--bg);
+    /* Dark navy blue background */
+    color: #e0e7ff;
+    /* Tailwind's blue-100 */
+}
+
+.sub_about_main {
+    width: 100%;
+}
+
+.overlay {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.overlay img {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    /* display: block; */
+}
+.overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.overlay .content {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 24px;
+}
+
+.about-text{
+    padding: 60px 15px;
+}
+
+/* Work with Client */
+.Work_Client {
+    background-color: #a8bfcd;
+}
+
+.heading h1 {
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.divider {
+    display: inline-block;
+    border-left: 4px solid #0e7490;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.about-content {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.quote-icon {
+    font-size: 3rem;
+    color: #6390a4;
+    line-height: 1;
+    user-select: none;
+}
+
+article {
+    font-size: 17px;
+    color: #1f2937;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+}
+
+footer {
+    margin-top: 15px;
+}
+
+.client-name {
+    color: #2b5a73;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: underline;
+}
+
+.client-name:hover {
+    color: #4485a3;
+}
+
+.separator {
+    color: #555;
+    margin: 0 5px;
+}
+
+.main-card {
+    padding: 2rem;
+    /* Dark navy blue background */
+}
+
+.main-card h1 {
+    font-weight: 700;
+    font-size: 1.875rem;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+}
+
+.believe_card {
+    background: #142158;
+    border-radius: 1rem;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 15px 40px rgb(8, 11, 31, 0.3);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid transparent;
+    cursor: default;
+}
+
+.believe_card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(66, 153, 225, 0.75);
+    box-shadow: 0 25px 50px rgb(66, 153, 225, 0.45);
+}
+
+.icon-container {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    padding: 0.8rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.believe_card:hover .icon-container {
+    background: #3b82f6;
+}
+
+.icon-container svg {
+    stroke: #3b82f6;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    width: 28px;
+    height: 28px;
+    transition: stroke 0.3s ease;
+}
+
+.believe_card:hover .icon-container svg {
+    stroke: white;
+}
+
+.believe_card h3 {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #a3bffa;
+    margin-bottom: 0.5rem;
+}
+
+.believe_card p {
+    font-size: 0.9375rem;
+    color: #cbd5e1;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    max-width: 350px;
+}
+
+@media (min-width: 700px) {
+    .believe_card p {
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 698px) {
+    .client-card {
+        max-width: 100%;
+        padding: 5rem 1.5rem;
+    }
+
+    .main-card {
+        padding: 5rem 1.5rem;
+    }
+}

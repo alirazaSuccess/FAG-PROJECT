@@ -1,0 +1,56 @@
+.admin-users-wrapper {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.admin_title{
+  color: white;
+  text-align: center;
+  margin: 20px 0px;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  color: white
+}
+
+.collapse-btn {
+  padding: 4px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.collapse-btn:hover {
+  background: #0056b3;
+}
+
+.subuser-row {
+  background: #f9f9f9;
+}
+
+.subuser-table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.subuser-table th,
+.subuser-table td {
+  border: 1px solid #ddd;
+  padding: 2px;
+}
+
+.subuser-table th {
+  background: #e9f5ff;
+}
