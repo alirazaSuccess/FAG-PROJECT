@@ -5,12 +5,12 @@ import "../styling/admin_users.css";
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [expanded, setExpanded] = useState({});
-
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
   useEffect(() => {
     const loadUsers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/users",
+          `${API_BASE}/api/admin/users`,
           {
             headers: {
               Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,

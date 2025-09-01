@@ -10,11 +10,13 @@ export default function AdminSignup() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const res = await fetch("http://localhost:5000/api/admin/create", {
+            const res = await fetch(`${API_BASE}/api/admin/create`,{
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),
@@ -39,7 +41,7 @@ export default function AdminSignup() {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/admin/check");
+                const res = await fetch(`${API_BASE}/api/admin/check`);
                 const data = await res.json();
 
                 if (data.exists) {

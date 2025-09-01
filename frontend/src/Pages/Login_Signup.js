@@ -8,6 +8,8 @@ import axios from "axios";
 const urlParams = new URLSearchParams(window.location.search);
 const refFromUrl = urlParams.get("ref") || "";
 
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
 const Login_Signup = () => {
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [signupForm, setSignupForm] = useState({
@@ -25,14 +27,22 @@ const Login_Signup = () => {
 
   useEffect(() => {
     const container = document.querySelector(".container");
-    container?.classList.add("sign-in-form");
+    // (Optional) ensure we're in sign-up on mount too:
+    container?.classList.add("sign-up-mode");
 
-    document.querySelector("#sign-up-btn")?.addEventListener("click", () =>
-      container?.classList.add("sign-up-mode")
-    );
-    document.querySelector("#sign-in-btn")?.addEventListener("click", () =>
-      container?.classList.remove("sign-up-mode")
-    );
+    const signUpBtn = document.getElementById("sign-up-btn");
+    const signInBtn = document.getElementById("sign-in-btn");
+
+    const toSignUp = () => container?.classList.add("sign-up-mode");
+    const toSignIn = () => container?.classList.remove("sign-up-mode"); // 👈 FIX
+
+    signUpBtn?.addEventListener("click", toSignUp);
+    signInBtn?.addEventListener("click", toSignIn);
+
+    return () => {
+      signUpBtn?.removeEventListener("click", toSignUp);
+      signInBtn?.removeEventListener("click", toSignIn);
+    };
   }, []);
 
   // 🔑 LOGIN
@@ -40,10 +50,10 @@ const Login_Signup = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/login",
+        `${API_BASE}/api/users/login`,
         loginForm
       );
-      const { token,role } = response.data;
+      const { token, role } = response.data;
 
       if (!token) {
         alert("Invalid credentials!");
@@ -61,6 +71,8 @@ const Login_Signup = () => {
     }
   };
 
+  console.log()
+
   // 🔑 SIGNUP
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
@@ -73,11 +85,11 @@ const Login_Signup = () => {
         address: signupForm.address,
         city: signupForm.city,
         country: signupForm.country,
-        refCode: signupForm.referralCode?.trim() || null, // 👈 send only if referral entered
+        refCode: signupForm.referralCode?.trim() || null,
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/users/signup",
+        `${API_BASE}/api/users/signup`,
         newUserPayload
       );
       const { token, role } = res.data;
@@ -87,12 +99,10 @@ const Login_Signup = () => {
         return;
       }
 
-      // ✅ Same storage style as login
       sessionStorage.setItem("token", token);
-      sessionStorage.setItem("role", role || "user"); // ✅ Save role
+      sessionStorage.setItem("role", role || "user");
       sessionStorage.setItem("isUserLoggedIn", "true");
 
-      // ✅ Redirect to payment step first
       navigate("/user-dashboard/dashboard");
     } catch (err) {
       console.error("Signup error:", err);
@@ -101,7 +111,8 @@ const Login_Signup = () => {
   };
 
   return (
-    <div className="container">
+    // 👇 Add default class here so it loads in Sign-Up view immediately
+    <div className="container sign-up-mode">
       <div className="forms-container">
         <div className="signin-signup">
           {/* LOGIN */}
@@ -138,54 +149,14 @@ const Login_Signup = () => {
           <form onSubmit={handleSignupSubmit} className="sign-up-form">
             <h2 className="title">Sign Up</h2>
             {[
-              {
-                icon: "fa-user",
-                field: "username",
-                placeholder: "Username",
-                required: true,
-              },
-              {
-                icon: "fa-envelope",
-                field: "email",
-                placeholder: "Email",
-                required: true,
-              },
-              {
-                icon: "fa-lock",
-                field: "password",
-                placeholder: "Password",
-                required: true,
-              },
-              {
-                icon: "fa-phone",
-                field: "number",
-                placeholder: "Number",
-                required: true,
-              },
-              {
-                icon: "fa-home",
-                field: "address",
-                placeholder: "Address",
-                required: true,
-              },
-              {
-                icon: "fa-city",
-                field: "city",
-                placeholder: "City",
-                required: true,
-              },
-              {
-                icon: "fa-flag",
-                field: "country",
-                placeholder: "Country",
-                required: true,
-              },
-              {
-                icon: "fa-code",
-                field: "referralCode",
-                placeholder: "Referral Code (optional)",
-                required: false,
-              },
+              { icon: "fa-user", field: "username", placeholder: "Username", required: true },
+              { icon: "fa-envelope", field: "email", placeholder: "Email", required: true },
+              { icon: "fa-lock", field: "password", placeholder: "Password", required: true },
+              { icon: "fa-phone", field: "number", placeholder: "Number", required: true },
+              { icon: "fa-home", field: "address", placeholder: "Address", required: true },
+              { icon: "fa-city", field: "city", placeholder: "City", required: true },
+              { icon: "fa-flag", field: "country", placeholder: "Country", required: true },
+              { icon: "fa-code", field: "referralCode", placeholder: "Referral Code (optional)", required: false },
             ].map((input, idx) => (
               <div className="input-field" key={idx}>
                 <i className={`fas ${input.icon}`}></i>

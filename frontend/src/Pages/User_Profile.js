@@ -5,6 +5,8 @@ import axios from "axios";
 const User_Profile = () => {
   const [user, setUser] = useState(null);
 
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -14,7 +16,7 @@ const User_Profile = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5000/api/users/me", {
+        const response = await axios.get(`${API_BASE}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

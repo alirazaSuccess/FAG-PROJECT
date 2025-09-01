@@ -8,12 +8,14 @@ const User_Profit = () => {
   const [totalProfit, setTotalProfit] = useState(0);
   const [openIndex, setOpenIndex] = useState(null);
 
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
   useEffect(() => {
     const fetchUser = async () => {
       const token = sessionStorage.getItem("token");
       if (!token) return;
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await axios.get(`${API_BASE}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

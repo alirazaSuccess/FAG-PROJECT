@@ -1,224 +1,348 @@
-   :root {
-       --bg: #f5f7fb;
-       --card: #ffffff;
-       --text: #0f172a;
-       /* slate-900 */
-       --muted: #64748b;
-       /* slate-500 */
-       --primary: #3b82f6;
-       /* blue-500 */
-       --success: #22c55e;
-       /* green-500 */
-       --danger: #ef4444;
-       /* red-500 */
-       --warning: #f59e0b;
-       /* amber-500 */
-       --radius: 14px;
-       --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
-       --soft: 0 1px 0 rgba(0, 0, 0, .05) inset, 0 0 0 1px rgba(2, 6, 23, .06);
-   }
+/* ===========================
+   LAYOUT: fixed sidebar + scrolling content
+   =========================== */
 
-   .dash_container {
-       width: 100%;
-       padding: 24px;
-   }
+html,
+body,
+#root {
+  height: 100%;
+}
 
-   /* Top Bar */
-   .topbar {
-       display: flex;
-       align-items: center;
-       justify-content: space-between;
-       gap: 16px;
-       margin-bottom: 20px;
-   }
+body {
+  margin: 0;
+}
 
-   .title {
-       font-weight: 700;
-       letter-spacing: 0.2px;
-   }
+/* 2-column shell: sidebar (fixed width) + content (fills rest) */
+.dash_layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  /* sidebar width + content */
+  height: 100dvh;
+  /* mobile-safe viewport height */
+  overflow: hidden;
+  /* prevent body from scrolling */
+  background: #0b1220;
+  /* optional bg behind content */
+}
 
-   .btn {
-       border: 0;
-       background: var(--primary);
-       color: #fff;
-       padding: 10px 16px;
-       font-weight: 600;
-       border-radius: 999px;
-       box-shadow: var(--shadow);
-       cursor: pointer;
-   }
+/* Sidebar stays put; it can scroll independently if it overflows */
+.dash_sidebar {
+  background: #0f172a;
+  /* slate-900 */
+  color: #e5e7eb;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 14px;
+}
 
-   /* Cards area */
-   .cards {
-       display: grid;
-       grid-template-columns: repeat(12, 1fr);
-       gap: 16px;
-   }
+.dash_brand {
+  font-weight: 900;
+  letter-spacing: .2px;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
 
-   .card {
-       grid-column: span 3;
-       background: var(--card);
-       border-radius: var(--radius);
-       padding: 18px;
-       box-shadow: var(--shadow);
-       border: 1px solid rgba(2, 6, 23, 0.05);
-   }
+.dash_nav {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 12px;
+}
 
-   .card h4 {
-       margin: 0 0 8px 0;
-       font-size: 14px;
-       color: var(--muted);
-       font-weight: 600;
-   }
+.dash_link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-weight: 600;
+  background: transparent;
+  transition: background .2s, color .2s;
+}
 
-   .card .value {
-       font-size: 28px;
-       font-weight: 800;
-   }
+.dash_link:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
 
-   .value.success {
-       color: var(--success);
-   }
+.dash_link.active {
+  background: #1e293b;
+  /* slate-800 */
+  color: #93c5fd;
+  /* blue-300 */
+}
 
-   .value.warning {
-       color: #0ea5e9;
-   }
+.dash_logout {
+  margin-top: auto;
+  border: 0;
+  background: #ef4444;
+  /* red-500 */
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+}
 
-   .value.primary {
-       color: var(--primary);
-   }
+/* Only the content column scrolls */
+.dash_content {
+  min-width: 0;
+  /* fixes overflow issues in grids */
+  overflow-y: auto;
+  /* <-- the only scroller */
+  background: #0b1220;
+  /* dark canvas behind cards */
+}
 
-   .value.danger {
-       color: var(--danger);
-   }
+/* Your existing container just fills inside the scroll area */
+.dash_container {
+  width: 100%;
+  padding: 24px;
+  min-height: 100%;
+}
 
-   .card--wide {
-       grid-column: span 6;
-   }
+/* ===========================
+   YOUR ORIGINAL STYLES
+   (kept as-is, tiny tweaks where needed)
+   =========================== */
 
-   /* Action Tabs */
-   .tabs {
-       display: grid;
-       grid-template-columns: repeat(4, 1fr);
-       gap: 16px;
-       margin: 18px 0 8px;
-   }
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  /* slate-900 */
+  --muted: #64748b;
+  /* slate-500 */
+  --primary: #3b82f6;
+  /* blue-500 */
+  --success: #22c55e;
+  /* green-500 */
+  --danger: #ef4444;
+  /* red-500 */
+  --warning: #f59e0b;
+  /* amber-500 */
+  --radius: 14px;
+  --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+  --soft: 0 1px 0 rgba(0, 0, 0, .05) inset, 0 0 0 1px rgba(2, 6, 23, .06);
+}
 
-   .tab {
-       padding: 14px 18px;
-       border-radius: var(--radius);
-       color: #fff;
-       text-align: center;
-       font-weight: 700;
-       box-shadow: var(--shadow);
-       cursor: pointer;
-       user-select: none;
-   }
+/* Top Bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
 
-   .tab.profile {
-       background: var(--success);
-   }
+.title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
 
-   .tab.referrals {
-       background: #2563eb;
-   }
+.btn {
+  border: 0;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  font-weight: 600;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
 
-   .tab.settings {
-       background: #7c3aed;
-   }
+a{
+  text-decoration: none;
+}
 
-   .tab.withdraw {
-       background: var(--danger);
-   }
+/* Cards area */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
 
-   /* Table */
-   .trasactionpanel {
-       background: var(--card);
-       border-radius: var(--radius);
-       box-shadow: var(--shadow);
-       border: 1px solid rgba(2, 6, 23, 0.05);
-       overflow: hidden;
-       margin-top: 16px;
-       
-   }
+.card {
+  grid-column: span 3;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(2, 6, 23, 0.05);
+}
 
-   .team_panel{
-    width: 100% !important;
-    margin: 16px !important;
-   }
+.card h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
 
-   .panel-header {
-       padding: 16px 18px;
-       font-weight: 800;
-       border-bottom: 1px solid rgba(2, 6, 23, 0.06);
-       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-   }
+.card .value {
+  font-size: 28px;
+  font-weight: 800;
+}
 
-   .table {
-       width: 100%;
-       border-collapse: collapse;
-   }
+.value.success {
+  color: var(--success);
+}
 
-   .table th,
-   .table td {
-       padding: 10px 10px;
-       text-align: left;
-       font-size: 14px;
-   }
+.value.warning {
+  color: #0ea5e9;
+}
 
-   .table th {
-       color: var(--muted);
-       font-weight: 700;
-   }
+.value.primary {
+  color: var(--primary);
+}
 
-   .table tr+tr td {
-       border-top: 1px solid rgba(2, 6, 23, 0.06);
-   }
+.value.danger {
+  color: var(--danger);
+}
 
-   .amount.plus {
-       color: var(--success);
-       font-weight: 700;
-   }
+.card--wide {
+  grid-column: span 6;
+}
 
-   .amount.minus {
-       color: var(--danger);
-       font-weight: 700;
-   }
+/* Action Tabs */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 18px 0 8px;
+  display: flex;
+  justify-content: center;
+}
 
-   .status.badge {
-       font-weight: 700;
-       color: #16a34a;
-       background: #dcfce7;
-       border: 1px solid #bbf7d0;
-       padding: 4px 10px;
-       border-radius: 999px;
-   }
+.tab {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  user-select: none;
+}
 
-   /* Responsive */
-   @media (max-width: 1024px) {
-       .card {
-           grid-column: span 6;
-       }
+.tab.profile {
+  background: var(--success);
+}
 
-       .card--wide {
-           grid-column: span 12;
-       }
-   }
+.tab.referrals {
+  background: #2563eb;
+}
 
-   @media (max-width: 640px) {
-       .container {
-           padding: 16px;
-       }
+.tab.settings {
+  background: #7c3aed;
+}
 
-       .cards {
-           gap: 12px;
-       }
+.tab.withdraw {
+  background: var(--danger);
+}
 
-       .card {
-           grid-column: span 12;
-       }
+/* Table */
+.trasactionpanel {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(2, 6, 23, 0.05);
+  overflow: hidden;
+  margin-top: 16px;
+}
 
-       .tabs {
-           grid-template-columns: 1fr 1fr;
-       }
-   }
+.team_panel {
+  width: 100% !important;
+  margin: 16px !important;
+}
+
+.panel-header {
+  padding: 16px 18px;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(2, 6, 23, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.table th {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.table tr+tr td {
+  border-top: 1px solid rgba(2, 6, 23, 0.06);
+}
+
+.amount.plus {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.amount.minus {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.status.badge {
+  font-weight: 700;
+  color: #16a34a;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dash_layout {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .card {
+    grid-column: span 6;
+  }
+
+  .card--wide {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 640px) {
+  .dash_layout {
+    grid-template-columns: 1fr;
+    /* stack */
+  }
+
+  .dash_sidebar {
+    display: none;
+    /* hide sidebar on tiny screens */
+  }
+
+  .dash_content {
+    overflow-y: auto;
+    /* still the scroller */
+  }
+
+  .cards {
+    gap: 12px;
+  }
+
+  .card {
+    grid-column: span 12;
+  }
+
+  .tabs {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -19,10 +19,12 @@ const RANK_RULES = [
 const User_Rank = () => {
   const [userRank, setUserRank] = useState("Starter");
 
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
   useEffect(() => {
     const fetchRank = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await axios.get(`${API_BASE}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },

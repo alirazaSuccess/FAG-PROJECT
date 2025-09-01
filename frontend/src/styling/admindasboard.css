@@ -177,7 +177,7 @@ header {
 .nav-upper-options {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   gap: 30px;
 }
 
@@ -377,7 +377,7 @@ header {
   }
 
   .navclose {
-    left: 00px;
+    left: 0px;
   }
 
   .searchbar {

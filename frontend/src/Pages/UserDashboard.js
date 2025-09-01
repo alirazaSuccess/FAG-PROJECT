@@ -28,13 +28,15 @@ export default function UserDashboard() {
     const isLoggedIn = sessionStorage.getItem("isUserLoggedIn") === "true";
     const token = sessionStorage.getItem("token");
 
+    const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
     if (!isLoggedIn || !token) {
       return navigate("/register", { replace: true });
     }
 
     const fetchUser = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/me", {
+        const response = await axios.get(`${API_BASE}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -93,9 +95,9 @@ export default function UserDashboard() {
           </div>
         </div>
       </header>
-
-      <div className="main-container">
         {/* Sidebar */}
+      <div className="main-container">
+
         <div className={`navcontainer ${navClosed ? "navclose" : ""}`}>
           <nav className="nav">
             <div className="nav-upper-options">
@@ -135,7 +137,6 @@ export default function UserDashboard() {
             </div>
           </nav>
         </div>
-
         {/* Content Area */}
         <div className="content-area">
           <Routes>
