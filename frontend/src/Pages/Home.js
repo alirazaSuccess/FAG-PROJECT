@@ -3,12 +3,14 @@ import React from "react";
 import Home_Image from '../assets/Illustration.png';
 import Footer from "../Components/Footer";
 import Home_img from '../assets/home_img.jpeg'
+import { useNavigate } from "react-router-dom";
 
 /**
  * Replace "illustration.png" with your actual image path.
  * If you want to use the provided image, copy it to /public or import it.
  */
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <>
       <section className="hero">
@@ -26,7 +28,9 @@ export default function Home() {
               </p>
 
               <div className="hero-cta">
-                <button onClick={() => window.location.href = '/login'} className="btn btn-primary">REGISTER</button>
+                <button onClick={() => navigate("/register")} className="btn btn-primary">
+                  REGISTER
+                </button>
               </div>
             </div>
           </div>
@@ -129,7 +133,7 @@ export default function Home() {
               <line x1="35" y1="22" x2="35" y2="26" stroke-width="1.5" />
               <line x1="32" y1="18" x2="32" y2="30" stroke-width="1.5" />
             </svg>
-            <p class="feature-text">Investments starting at $1</p>
+            <p class="feature-text">Access to Global Markets</p>
           </article>
 
           <article class="feature-card">

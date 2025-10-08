@@ -13,7 +13,7 @@ const RANK_RULES = [
   { level: 7, requiredUsers: 2187, rank: "Emerald" },
   { level: 8, requiredUsers: 6561, rank: "Diamond" },
   { level: 9, requiredUsers: 19683, rank: "Crown" },
-  { level: 10, requiredUsers: 59049, rank: "Legender" },
+  { level: 10, requiredUsers: 59049, rank: "Legendary" },
 ];
 
 const User_Rank = () => {
@@ -55,8 +55,8 @@ const User_Rank = () => {
             } else if (idx === currentIndex) {
               statusClass = "active";
               statusText = "Your Current Rank ⭐";
-            } else {
               statusClass = "pending";
+            } else {
               statusText = "Upcoming ⏳";
             }
 

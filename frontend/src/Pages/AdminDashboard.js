@@ -4,21 +4,35 @@ import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import "../styling/admindasboard.css";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+
 
 // Import Subpages
 import AdminHome from "./AdminHome";
 import AdminUsers from "./AdminUsers";
-import AdminProfile from "./AdminProfile";
 import Admin_Request from "./Admin_Request";
+import Admin_ProductRequests from "./Admin_ProductRequests";
 
 export default function AdminDashboard() {
   const [navClosed, setNavClosed] = useState(false);
   const navigate = useNavigate();
+    const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
 
   const toggleMenu = () => {
     setNavClosed((prev) => !prev);
   };
+  // Close the nav only on mobile after clicking a link.
+  // On desktop it stays open (sticks).
+  const handleNavLinkClick = () => {
+    if (isMobile()) {
+      setNavClosed((prev) => !prev)   // collapse after navigate on phones/tablets
+    } else {
+      setNavClosed(false);  // keep it open on desktop
+    }
+  };
+
 
   const handleLogout = () => {
     sessionStorage.setItem("isAdminLoggedIn", "false"); // or removeItem if preferred
@@ -71,7 +85,7 @@ export default function AdminDashboard() {
           </svg>
         </div>
         <div className="">
-          <div className="admin_logo">FAG ADMIN</div>
+          <div className="admin_logo">FAG WORLD ADMIN</div>
         </div>
         <div className="message">
           <div className="dp">
@@ -88,44 +102,40 @@ export default function AdminDashboard() {
         <div className={`navcontainer ${navClosed ? "navclose" : ""}`}>
           <nav className="nav">
             <div className="nav-upper-options">
-              <Link to="" className="nav-option option1">
+              <Link to="" className="nav-option option1" onClick={handleNavLinkClick}>
                 <GroupIcon className="nav-img" />
-                <h3>Dashboard</h3>
+                <h4>Dashboard</h4>
               </Link>
 
-              <Link to="users" className="nav-option option2">
+              <Link to="users" className="nav-option option2" onClick={handleNavLinkClick}>
                 <GroupIcon className="nav-img" />
-                <h3>Users</h3>
+                <h4>Users</h4>
               </Link>
 
-              <Link to="Admin_Request" className="nav-option option3">
-                <h3>Withdraw Request</h3>
+              <Link to="Admin_Request" className="nav-option option3" onClick={handleNavLinkClick}>
+                <EmojiPeopleIcon className="nav-img" />
+                <h4>Withdraw</h4>
               </Link>
-
-              <Link to="profile" className="nav-option option3">
-                <AdminPanelSettingsIcon className="nav-img" />
-                <h3>Admin Profile</h3>
+              <Link to="/admin/product-requests" className="nav-option" onClick={handleNavLinkClick}>
+                <LocalMallIcon />
+                <h4>Product</h4>
               </Link>
 
               <div className="nav-option logout" onClick={handleLogout}>
-                <img
-                  src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183321/7.png"
-                  className="nav-img"
-                  alt="logout"
-                />
-                <h3>Logout</h3>
+                <LogoutOutlinedIcon className="nav-img" />
+                <h4>Logout</h4>
               </div>
             </div>
           </nav>
         </div>
 
         {/* Content Area */}
-        <div style={{ width: "100%", padding: '30px' }}>
+        <div style={{ width: "80%", padding: '30px' }}>
           <Routes>
             <Route path="/" element={<AdminHome />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="Admin_Request" element={<Admin_Request />} />
-            <Route path="profile" element={<AdminProfile />} />
+            <Route path="product-requests" element={<Admin_ProductRequests />} />
           </Routes>
         </div>
       </div>

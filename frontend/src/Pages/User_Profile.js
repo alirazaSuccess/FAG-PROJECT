@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styling/UserProfile.css";
 import axios from "axios";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const User_Profile = () => {
   const [user, setUser] = useState(null);
@@ -33,12 +34,7 @@ const User_Profile = () => {
   }, []);
 
   if (!user) {
-    return (
-      <div className="profile-container no-user">
-        <h2>No user is logged in</h2>
-        <p>Please log in to see your profile.</p>
-      </div>
-    );
+    return <CircularProgress style={{display: "flex", justifyContent: "center", alignItems: "center",}} />
   }
 
   return (
@@ -99,7 +95,7 @@ const User_Profile = () => {
                   Level {user.level}
                 </span>
               ) : (
-                "No Levels Assigned Yet"
+                "LEVEL 0"
               )}
             </td>
           </tr>

@@ -59,6 +59,7 @@ body,
 
 .hero-title {
   font-size: 44px;
+  text-transform: uppercase;
   color: var(--white);
 }
 
@@ -101,6 +102,7 @@ body,
   color: #fff;
   padding: 24px 48px;
   max-width: 1000px;
+  z-index: 5;
 }
 
 /* subtitle */
@@ -204,6 +206,14 @@ body,
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+  .home_overlay .content {
+    padding: 20px 20px;
+    gap: 25px;
+  }
+  .hero-title {
+    font-size: 25px;
+  }
+
   .services-inner {
     flex-direction: column;
     text-align: center;
@@ -351,8 +361,7 @@ body,
 /* Responsive tweaks */
 @media (max-width: 560px) {
   h1 {
-    font-size: 2rem;
-    margin-bottom: 40px;
+    font-size: 20px;
   }
 
   .features-grid {
@@ -371,7 +380,6 @@ body,
   align-items: center;
   height: 100vh;
   gap: 20px;
-  background-color: #0f172a;
 }
 
 .payment-card {
@@ -379,7 +387,7 @@ body,
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  width: 500px;
+  width: 90%;
   color: white;
 }
 
@@ -405,13 +413,26 @@ body,
 }
 
 .wallet-address {
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: normal;
   color: #38bdf8;
+  overflow: hidden;
+  width: 300px;
 }
 
 .wallet-note {
   font-size: 12px;
   color: #94a3b8;
+}
+
+.css-107ft6c {
+  margin-bottom: 0px !important;
+}
+
+@media (min-width:699px) {
+  .payment-card {
+    width: 50%;
+  }
 }
 
 /* Rank Page Css */
@@ -422,7 +443,7 @@ body,
   padding: 1rem;
   text-align: center;
   transition: 0.3s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .rank-card.completed {
@@ -487,84 +508,10 @@ body,
   background: #fff;
 }
 
-
-
-/* Contact Us Page Style */
-.contact-section {
-  background: linear-gradient(to right, #f9f9f9, #e9ecef);
-  padding: 50px 20px;
-  font-family: Arial, sans-serif;
-}
-
-.contact-container {
-  max-width: 600px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.contact-container h2 {
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 28px;
-  color: #333;
-}
-
-.contact-container p {
-  text-align: center;
-  color: #666;
-  margin-bottom: 30px;
-}
-
-.contact-form .form-group {
-  margin-bottom: 20px;
-}
-
-.contact-form label {
-  display: block;
-  font-weight: bold;
-  color: #444;
-  margin-bottom: 5px;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  font-size: 16px;
-}
-
-.contact-form textarea {
-  height: 120px;
-  resize: none;
-}
-
-.btn-submit {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  background: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.btn-submit:hover {
-  background: #0056b3;
-}
-
 /* Footer Style */
 
 .footer {
-  background-color: var(--bg);
+  background-color: #07142a;
   color: var(--white);
   font-family: Arial, sans-serif;
 }
@@ -634,4 +581,63 @@ body,
 .footer-socials a {
   margin-left: 10px;
   font-size: 14px;
+}
+
+
+/* Term & Condition & Privacy Policy Css */
+
+.terms-container {
+  max-width: 90%;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.8;
+}
+
+.terms-heading {
+  font-size: 28px;
+  text-transform: uppercase;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  border-left: 5px solid #3498db;
+  padding-left: 15px;
+}
+
+.terms-list {
+  padding-left: 20px;
+  list-style: decimal;
+}
+
+.terms-list li {
+  margin-bottom: 12px;
+}
+
+.terms-note {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
+}
+
+
+@media screen and (max-width: 600px) {
+  .terms-container {
+    padding: 20px;
+  }
+
+  .terms-heading {
+    font-size: 22px;
+  }
+
+  .terms-list li {
+    font-size: 15px;
+  }
+
+  .terms-note {
+    font-size: 13px;
+  }
 }

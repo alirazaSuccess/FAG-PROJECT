@@ -2,31 +2,36 @@ import React, { useState, useEffect } from 'react';
 import "../styling/Dashboard.css";
 import { Link } from 'react-router-dom';
 import axios from "axios";
-
+import { CircularProgress } from '@mui/material';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const [totalProfit, setTotalProfit] = useState(0);
-  const [dailyProfit, setDailyProfit] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0);   // <- referral commission only
+  const [dailyProfit, setDailyProfit] = useState(0);   // <- daily incentive
   const [rank, setRank] = useState("STARTER");
   const [error, setError] = useState("");
-  const [binanceUSDT, setBinanceUSDT] = useState(null); // <- Binance balance
   const [refCode, setRefCode] = useState("");
   const [copied, setCopied] = useState(false);
 
+  // Withdrawals
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
+  const [pendingWithdraw, setPendingWithdraw] = useState(0);
+
+  // ✅ Claim gating + status
+  const [eligible, setEligible] = useState(false);           // balance >= 50
+  const [claimStatus, setClaimStatus] = useState("none");    // none | pending | approved | rejected
+
   const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
-  // ✅ handleCopy outside useEffect
+
   const handleCopy = async (e) => {
-    e?.stopPropagation?.(); // don't trigger parent click
+    e?.stopPropagation?.();
     if (!refCode) return;
 
-    // copy referral link (or just the code if you prefer)
     const text = `${window.location.origin}/register?ref=${refCode}`;
 
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      // fallback for older browsers
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
@@ -51,13 +56,23 @@ const Dashboard = () => {
         setUser(userData);
         setRefCode(userData.refCode);
 
-        const referralHistory = userData.referralHistory || [];
-        const profitSum = referralHistory
-          .filter(r => r.name !== "dailyProfit")
-          .reduce((sum, r) => sum + Number(r.profit || 0), 0);
+        // ✅ eligibility by balance
+        setEligible(Number(userData.balance || 0) >= 50);
 
-        setTotalProfit(profitSum);
-        setDailyProfit(Number(userData.dailyProfit || 0));
+        // ---------- FIX STARTS HERE ----------
+        // We only want referral commission here (exclude daily bonus lines).
+        // Handle both current "Daily Bonus" and any legacy "dailyProfit" markers.
+        const referralHistory = Array.isArray(userData.referralHistory) ? userData.referralHistory : [];
+        const isDailyLine = (r) => {
+          const n = String(r?.name || "").toLowerCase().trim();
+          // exclude “Daily Bonus”, legacy “dailyProfit”, and common variants
+          return n === "daily bonus" || n === "dailyprofit" || n === "daily_profit" || n === "daily";
+        };
+
+        // ---------- FIX ENDS HERE ----------
+
+        setTotalProfit(userData.bonusEarned);                     // Commission card
+        setDailyProfit(Number(userData.dailyProfit || 0));      // Daily Incentive card
         setRank(userData.rank || "STARTER");
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -65,30 +80,98 @@ const Dashboard = () => {
       }
     };
 
-    const fetchBinance = async () => {
+    const fetchWithdrawals = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE}/api/public/binance/usdt`);
-        setBinanceUSDT(Number(data?.total || 0));
-      } catch (e) {
-        setBinanceUSDT(0);
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+        const res = await axios.get(`${API_BASE}/api/users/withdrawals/mine`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const withdrawals = res.data?.withdrawals || [];
+        const paid = withdrawals
+          .filter(w => (w.status || "").toLowerCase() === "paid")
+          .reduce((sum, w) => sum + Number(w.amount || 0), 0);
+
+        const pending = withdrawals
+          .filter(w => ["pending", "approved"].includes((w.status || "").toLowerCase()))
+          .reduce((sum, w) => sum + Number(w.amount || 0), 0);
+
+        setTotalWithdrawn(paid);
+        setPendingWithdraw(pending);
+      } catch (err) {
+        console.error("Error fetching withdrawals:", err);
+      }
+    };
+
+    // ✅ latest claim status
+    const fetchClaims = async () => {
+      try {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+        const res = await axios.get(`${API_BASE}/api/users/claims/mine`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const claims = res.data?.claims || [];
+        if (claims.length) {
+          claims.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setClaimStatus((claims[0].status || "none").toLowerCase());
+        } else {
+          setClaimStatus("none");
+        }
+      } catch {
+        /* ignore */
       }
     };
 
     fetchUser();
-    fetchBinance();
+    fetchWithdrawals();
+    fetchClaims();
 
-    // optional polling for user data
-    const interval = setInterval(fetchUser, 10000);
+    const interval = setInterval(() => {
+      fetchUser();
+      fetchWithdrawals();
+      fetchClaims();
+    }, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [API_BASE]);
+
+  const fmt = (n) => `$${Number(n || 0).toFixed(2)}`;
+
+  // ✅ Claim button state/label
+  const claimDisabled =
+    !eligible || claimStatus === "pending" || claimStatus === "approved";
+  const claimLabel =
+    claimStatus === "pending" ? "PENDING" :
+    claimStatus === "approved" ? "APPROVED" :
+    eligible ? "CLAIM" : "CLAIM (min $50)";
 
   return (
     <div className="dash_container">
       <div className="topbar">
-        <h1 style={{ color: "white" }}>Perfumes / Watches — Dashboard</h1>
-        <Link to={"/payment"}>
-          <button className="tab withdraw">DEPOSIT</button>
-        </Link>
+        <div style={{display: "flex", justifyContent: 'right', width: "100%"}}>
+          {/* Claim + Deposit */}
+          {claimDisabled ? (
+            <button
+              className="tab withdraw"
+              style={{ background: "#10b981", opacity: 0.7, cursor: "not-allowed" }}
+              disabled
+              title={eligible ? "Wait for admin decision" : "Requires minimum $50 balance"}
+            >
+              {claimLabel}
+            </button>
+          ) : (
+            <Link to={"/product_claim"}>
+              <button className="tab withdraw" style={{ background: "#10b981" }}>
+                {claimLabel}
+              </button>
+            </Link>
+          )}
+          &nbsp;&nbsp;
+          <Link to={"/payment"}>
+            <button className="tab withdraw">DEPOSIT</button>
+          </Link>
+        </div>
       </div>
 
       {error && (
@@ -98,83 +181,67 @@ const Dashboard = () => {
       )}
 
       <section className="cards" aria-label="Summary statistics">
-        <article className="card" aria-labelledby="profit">
-          <h4 id="profit">Daily Profit</h4>
-          <div className="value primary">${Number(dailyProfit || 0).toFixed(2)}</div>
+        {/* ✅ Daily Incentive uses user.dailyProfit */}
+        <article className="card">
+          <h4>Daily Incentive</h4>
+          <div className="value primary">{fmt(dailyProfit)}</div>
         </article>
 
-        <article className="card" aria-labelledby="commission">
-          <h4 id="commission">Commission</h4>
-          <div className="value success">${Number(totalProfit || 0).toFixed(2)}</div>
+        {/* ✅ Commission shows referral commission (excludes daily bonus) */}
+        <article className="card">
+          <h4>Commission</h4>
+          <div className="value success">{fmt(totalProfit)}</div>
         </article>
 
-        <article className="card" aria-labelledby="earnings">
-          <h4 id="earnings">Total Earnings</h4>
-          <div className="value warning">
-            ${Number((totalProfit || 0) + (dailyProfit || 0)).toFixed(2)}
-          </div>
+        <article className="card">
+          <h4>Total Earnings</h4>
+          <div className="value warning">{fmt(totalProfit + dailyProfit)}</div>
         </article>
 
-        <article className="card" aria-labelledby="withdraw">
-          <h4 id="withdraw">Withdraw (Binance USDT)</h4>
-          <div className="value danger">
-            {binanceUSDT === null ? "—" : `$${binanceUSDT.toFixed(2)}`}
-          </div>
-          <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>
-            Spot + Funding total
-          </div>
+        <article className="card">
+          <h4>Total Withdrawn</h4>
+          <div className="value danger">{fmt(totalWithdrawn)}</div>
         </article>
 
-        <article className="card card--wide" aria-labelledby="package">
-          <h4 id="package">Package</h4>
+        <article className="card">
+          <h4>Pending Withdrawals</h4>
+          <div className="value warning">{fmt(pendingWithdraw)}</div>
+        </article>
+
+        <article className="card">
+          <h4>Package</h4>
           <div className="value" style={{ fontSize: "18px", fontWeight: "800", color: "#1f2937" }}>
             <a href="#" style={{ textDecoration: "none", color: "#2563eb" }}>
-              {user ? `Perfume Package : ${Number(user.balance || 0)} $` : "Loading..."}
+              {user ? `Perfume Package : ${Number(user.balance || 0)} $` : <CircularProgress />}
             </a>
           </div>
         </article>
 
-        <article className="card card--wide" aria-labelledby="rank">
-          <h4 id="rank">Rank</h4>
-          <div className="value" style={{ color: "#b45309" }}>{rank}</div>
+        <article className="card card--wide">
+          <h4>Rank</h4>
+          <div className="value">{rank}</div>
         </article>
       </section>
 
       <nav className="tabs" aria-label="Primary actions">
-        <div
-          className="tab referrals"
-          role="button"
-          tabIndex="0"
-          style={{ display: "flex", alignItems: "center", gap: 8, width: "40vw" }}
-        >
-          <button
-            onClick={handleCopy}
-            title="Copy referral code"
+        <div className="tab referrals" role="button" tabIndex="0" style={{ display: "flex", alignItems: "center", gap: 8, width: "40vw" }}>
+          <button onClick={handleCopy} title="Copy referral code"
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              border: "none",
-              background: "rgba(255,255,255,0.15)",
-              color: "#fff",
-              cursor: "pointer",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              width: 28, height: 28, borderRadius: 8, border: "none",
+              background: "rgba(255,255,255,0.15)", color: "#fff", cursor: "pointer",
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M16 1H4c-1.1 0-2 .9-2 2v12h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
             </svg>
           </button>
-          <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {refCode}
-          </span>
+          <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{refCode}</span>
           {copied && <span style={{ marginLeft: 6, fontSize: 12, color: "#e5e7eb" }}>Copied!</span>}
         </div>
 
         <Link to={'/user-dashboard/withdraw'}>
-          <div className="tab withdraw" role="button" tabIndex="0" style={{width: "40vw"}}>Withdraw Funds</div>
+          <div className="tab withdraw" role="button" tabIndex="0" style={{ width: "40vw" }}>Withdraw Funds</div>
         </Link>
       </nav>
     </div>

@@ -15,30 +15,12 @@ const Footer = () => {
                         </ul>
                     </div>
                     <div className="footer-section">
-                        <h2>Help center</h2>
-                        <ul>
-                            <li><a href="#">Instagram</a></li>
-                            <li><a href="#">Whatsapp</a></li>
-                            <li><a href="#">Facebook</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
-                    </div>
-                    <div className="footer-section">
                         <h2>Legal</h2>
                         <ul>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="/privacy_policy">Privacy Policy</a></li>
+                            <li><a href="/term_condition">Terms & Conditions</a></li>
                         </ul>
                     </div>
-                </div>
-            </div>
-            <div className="footer-bottom">
-                <span>© 2025 <a href="/">Aliraza</a>. All Rights Reserved.</span>
-                <div className="footer-socials">
-                    <a href="#">FB</a>
-                    <a href="#">Tiktok</a>
-                    <a href="#">Instagram</a>
-                    <a href="#">LinkedIn</a>
                 </div>
             </div>
         </footer>

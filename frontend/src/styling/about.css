@@ -17,7 +17,7 @@
 }
 
 .about_main {
-    background-color: var(--bg);
+    background-color: #07142a;
     /* Dark navy blue background */
     color: #e0e7ff;
     /* Tailwind's blue-100 */
@@ -96,10 +96,6 @@ article {
     color: #1f2937;
     line-height: 1.6;
     letter-spacing: 0.3px;
-}
-
-footer {
-    margin-top: 15px;
 }
 
 .client-name {

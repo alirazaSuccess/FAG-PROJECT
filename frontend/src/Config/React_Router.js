@@ -21,7 +21,6 @@ import NotFound from "../Pages/NotFound";
 
 // Admin subpages
 import AdminUsers from "../Pages/AdminUsers";
-import AdminProfile from "../Pages/AdminProfile";
 import PaymentStep from "../Components/Payment";
 
 // User subpages
@@ -36,6 +35,11 @@ import Team from "../Pages/Team";
 // ✅ Import ProtectedRoute
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Admin_Request from "../Pages/Admin_Request";
+import { TermsCondition } from "../Pages/TermsCondition";
+import { Privacy_Policy } from "../Pages/Privacy_Policy";
+import ForgotPassword from "../Pages/ForgetPassword";
+import Product_Claim from "../Pages/Product_Claim";
+import Admin_ProductRequests from "../Pages/Admin_ProductRequests";
 
 function PublicRoute({ children, role }) {
   const isAdminLoggedIn = sessionStorage.getItem("isAdminLoggedIn") === "true";
@@ -61,10 +65,10 @@ function AppLayout({ children }) {
   const shouldHideNavbar =
     location.pathname === "/admin-login" ||
     location.pathname === "/admin-signup" ||
-    location.pathname === "/register" ||
+    location.pathname === "/product_claim" ||
     location.pathname.startsWith("/admin") ||
     location.pathname.startsWith("/user-dashboard") ||
-    location.pathname.startsWith("/payment");
+    location.pathname.startsWith("/payment")
 
   return (
     <>
@@ -105,6 +109,30 @@ export default function React_Router() {
             }
           />
           <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/term_condition"
+            element={
+              <PublicRoute>
+                <TermsCondition />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/privacy_policy"
+            element={
+              <PublicRoute>
+                <Privacy_Policy />
+              </PublicRoute>
+            }
+          />
+          <Route
             path="/register"
             element={
               <PublicRoute>
@@ -133,6 +161,7 @@ export default function React_Router() {
 
           {/* Payment Step (isko Public rakha) */}
           <Route path="/payment" element={<PaymentStep />} />
+          <Route path="/product_claim" element={<Product_Claim />} />
 
           {/* Admin Dashboard & subpages (Protected) */}
           <Route
@@ -145,7 +174,7 @@ export default function React_Router() {
           >
             <Route path="users" element={<AdminUsers />} />
             <Route path="Admin_Request" element={<Admin_Request />} />
-            <Route path="profile" element={<AdminProfile />} />
+              <Route path="product-requests" element={<Admin_ProductRequests />} />
           </Route>
 
           {/* User Dashboard & subpages (Protected) */}

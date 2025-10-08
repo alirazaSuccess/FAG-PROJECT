@@ -12,7 +12,7 @@ const About = () => {
                         <img src={About_img} alt="About us"/>
                         <div className="content">
                             <div>
-                                <h1>ABOUT US</h1>
+                                <h2>ABOUT US</h2>
                                 <p>Together, We Build the Future.</p>
                             </div>
                         </div>
@@ -24,7 +24,7 @@ const About = () => {
                         <p>
                             Rooted in transparency, trust, and forward-thinking strategies, we bridge the gap between opportunity and innovation. Join us as we create pathways to a smarter, more sustainable world.
                         </p>
-                        <button onClick={() => window.location.href = '/login'} className="btn btn-primary">REGISTER</button>
+                        <button onClick={() => window.location.href = '/register'} className="btn btn-primary">REGISTER</button>
                     </div>
                 </div>
             </section>
@@ -77,7 +77,7 @@ const About = () => {
                             </div>
                         <div className='about-text'>
                         <div className="heading">
-                            <h1>Ready to invest in a smarter future?</h1>
+                            <h1>Ready to take the next step toward a smarter future?</h1>
                         </div>
                         <div className="about-content">
                             <article>Partner with FAG and be part of tomorrow’s innovation, today.
@@ -86,7 +86,7 @@ const About = () => {
                         </div>
                         </div>
                     </section>
-                                <Footer />
+                    <Footer />
                 </div>
             </div>
         </>

@@ -22,7 +22,10 @@ import {
   Tooltip,
   Divider,
   LinearProgress,
+  TableContainer,
+  useMediaQuery,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -30,7 +33,6 @@ import BlockIcon from "@mui/icons-material/Block";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-
 
 export default function Admin_Request() {
   const navigate = useNavigate();
@@ -107,7 +109,8 @@ export default function Admin_Request() {
     return list.filter((w) => {
       const email = (w.user?.email || "").toLowerCase();
       const addr = (w.address || "").toLowerCase();
-      return email.includes(q) || addr.includes(q);
+      const username = (w.user?.username || "").toLowerCase();
+      return email.includes(q) || addr.includes(q) || username.includes(q);
     });
   }, [list, search]);
 
@@ -242,59 +245,167 @@ export default function Admin_Request() {
     navigator.clipboard.writeText(text || "");
   };
 
+  // ---------- Responsive switch ----------
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md")); // md and up = table, below md = cards
+
+  // Card for mobile/tablet
+  const MobileCard = ({ w }) => {
+    const busy = rowBusy === w._id;
+    const checked = selected.has(w._id);
+    return (
+      <Paper
+        elevation={1}
+        sx={{
+          p: 1.5,
+          mb: 1.5,
+          borderRadius: 2,
+        }}
+      >
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Checkbox
+            size="small"
+            checked={checked}
+            onChange={() => toggleOne(w._id)}
+          />
+          <Stack spacing={0.2} flex={1}>
+            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+              {w.user?.email || "—"}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {w.user?.username || "user"}
+            </Typography>
+          </Stack>
+          <Chip
+            size="small"
+            color="success"
+            label={`${w.amount} ${w.currency || "USDT"}`}
+          />
+        </Stack>
+
+        <Divider sx={{ my: 1 }} />
+
+        <Stack spacing={0.75}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 72 }}>
+              Chain:
+            </Typography>
+            <Chip size="small" variant="outlined" label={w.chain || "TRC20"} />
+          </Stack>
+
+          <Stack spacing={0.5}>
+            <Typography variant="caption" color="text.secondary">
+              Address
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography
+                variant="body2"
+                sx={{ wordBreak: "break-all", flex: 1 }}
+              >
+                {w.address}
+              </Typography>
+              <Tooltip title="Copy">
+                <IconButton size="small" onClick={() => copy(w.address)}>
+                  <ContentCopyIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Stack>
+
+          <Stack direction="row" spacing={1}>
+            <Typography variant="caption" color="text.secondary" sx={{ minWidth: 72 }}>
+              Requested:
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {new Date(w.createdAt).toLocaleString()}
+            </Typography>
+          </Stack>
+        </Stack>
+
+        <Stack direction="row" spacing={1} sx={{ mt: 1.25 }}>
+          <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            startIcon={<CheckCircleIcon />}
+            disabled={busy || loading}
+            onClick={() => approveOne(w._id)}
+          >
+            Approve
+          </Button>
+          <Button
+            fullWidth
+            size="small"
+            color="error"
+            variant="outlined"
+            startIcon={<CancelIcon />}
+            disabled={busy || loading}
+            onClick={() => rejectOne(w._id)}
+          >
+            Reject
+          </Button>
+        </Stack>
+      </Paper>
+    );
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2, borderColor: "white" }}>
-        <Typography variant="h4" sx={{ fontWeight: 600, color: "white", }}>
+      {/* Header bar */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        justifyContent="space-between"
+        sx={{ mb: 2 }}
+        spacing={1.25}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 700, color: "white", textTransform: "uppercase", }}>
           Pending Withdrawals
         </Typography>
-        <Stack direction="row" spacing={1}>
+
+        <Stack direction="row" spacing={1} sx={{ width: { xs: "100%", sm: "auto" } }}>
           <TextField
             size="small"
-            placeholder="Search by email or address"
+            placeholder="Search by email, username or address"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start" sx={{ color: "white", }}>
+                <InputAdornment position="start" sx={{color: "white",}} >
                   <SearchIcon />
                 </InputAdornment>
               ),
             }}
             sx={{
-              minWidth: 280,
+              minWidth: { xs: "100%", sm: 280 },
 
               // input text color
-              '& .MuiInputBase-input': {
-                color: '#fff',
+              "& .MuiInputBase-input": {
+                color: "#fff",
               },
 
-              // placeholder color (must set opacity: 1)
-              '& .MuiInputBase-input::placeholder': {
-                color: '#9ca3af', // gray-400
+              // placeholder color
+              "& .MuiInputBase-input::placeholder": {
+                color: "#fff",
                 opacity: 1,
+                fontSize: "10px",
               },
 
-              // left adornment (icon) color
-              '& .MuiInputAdornment-root svg': {
-                color: '#fff',
-              },
-
-              // outlined border colors
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#fff',
+              // outlined border color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#fff",
                 },
-                '&:hover fieldset': {
-                  borderColor: '#fff',
+                "&:hover fieldset": {
+                  borderColor: "#fff",
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#fff',
+                "&.Mui-focused fieldset": {
+                  borderColor: "#fff",
                 },
               },
             }}
           />
-          <Tooltip title="Refresh" sx={{ color: "white", }} >
+          <Tooltip title="Refresh">
             <IconButton onClick={load}>
               <RefreshIcon />
             </IconButton>
@@ -302,21 +413,29 @@ export default function Admin_Request() {
         </Stack>
       </Stack>
 
-      <Paper elevation={2}>
-        {loading && <LinearProgress />}
+      {/* Summary + bulk actions */}
+      <Paper elevation={2} sx={{ overflow: "hidden" }}>
+        {loading && <LinearProgress sx={{
+          "& .css-1umw9bq-MuiSvgIcon-root":{
+            color:"#fff"
+          }
+        }} />}
 
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: { xs: 1.5, sm: 2 } }}>
           <Stack
-            direction={{ xs: "column", sm: "row" }}
+            direction={{ xs: "column", md: "row" }}
             spacing={1.5}
-            alignItems={{ xs: "flex-start", sm: "center" }}
+            alignItems={{ xs: "flex-start", md: "center" }}
             justifyContent="space-between"
             sx={{ mb: 1.5 }}
           >
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+            >
               <Typography variant="body2">
-                Showing <b>{filtered.length}</b> of <b>{list.length}</b> pending
-                request(s)
+                Showing <b>{filtered.length}</b> of <b>{list.length}</b> pending request(s)
               </Typography>
               <Chip label={`Total Pending: ${totalPending} USDT`} color="info" />
               <Chip
@@ -326,8 +445,9 @@ export default function Admin_Request() {
               />
             </Stack>
 
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} sx={{ width: { xs: "100%", md: "auto" } }}>
               <Button
+                fullWidth
                 variant="contained"
                 startIcon={<DoneAllIcon />}
                 disabled={selected.size === 0 || loading}
@@ -336,6 +456,7 @@ export default function Admin_Request() {
                 Approve Selected
               </Button>
               <Button
+                fullWidth
                 variant="outlined"
                 color="error"
                 startIcon={<BlockIcon />}
@@ -349,125 +470,144 @@ export default function Admin_Request() {
 
           <Divider sx={{ mb: 1.5 }} />
 
+          {/* Responsive content */}
           {filtered.length === 0 ? (
             <Box sx={{ p: 3, textAlign: "center", color: "text.secondary" }}>
               No pending requests{list.length ? " (try clearing search)" : ""}.
             </Box>
-          ) : (
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={allOnPageSelected}
-                      indeterminate={
-                        selected.size > 0 && !allOnPageSelected
-                      }
-                      onChange={toggleAll}
-                    />
-                  </TableCell>
-                  <TableCell>User</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Chain</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Requested</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
+          ) : isDesktop ? (
+            // ---------- Desktop Table ----------
+            <TableContainer sx={{ maxHeight: "70vh" }}>
+              <Table size="small" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={allOnPageSelected}
+                        indeterminate={selected.size > 0 && !allOnPageSelected}
+                        onChange={toggleAll}
+                      />
+                    </TableCell>
+                    <TableCell>User</TableCell>
+                    <TableCell>Amount</TableCell>
+                    <TableCell>Chain</TableCell>
+                    <TableCell sx={{ width: "40%" }}>Address</TableCell>
+                    <TableCell>Requested</TableCell>
+                    <TableCell align="right">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
 
-              <TableBody>
-                {filtered.map((w) => {
-                  const checked = selected.has(w._id);
-                  const busy = rowBusy === w._id;
-                  return (
-                    <TableRow key={w._id} hover selected={checked}>
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={checked}
-                          onChange={() => toggleOne(w._id)}
-                        />
-                      </TableCell>
+                <TableBody>
+                  {filtered.map((w) => {
+                    const checked = selected.has(w._id);
+                    const busy = rowBusy === w._id;
+                    return (
+                      <TableRow key={w._id} hover selected={checked}>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={checked}
+                            onChange={() => toggleOne(w._id)}
+                          />
+                        </TableCell>
 
-                      <TableCell>
-                        <Stack spacing={0.3}>
-                          <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                            {w.user?.email || "—"}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {w.user?.username || "user"}
-                          </Typography>
-                        </Stack>
-                      </TableCell>
+                        <TableCell>
+                          <Stack spacing={0.3}>
+                            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                              {w.user?.email || "—"}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {w.user?.username || "user"}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
 
-                      <TableCell>
-                        <Chip
-                          size="small"
-                          color="success"
-                          label={`${w.amount} ${w.currency || "USDT"}`}
-                        />
-                      </TableCell>
-
-                      <TableCell>
-                        <Chip
-                          size="small"
-                          variant="outlined"
-                          label={w.chain || "TRC20"}
-                        />
-                      </TableCell>
-
-                      <TableCell sx={{ maxWidth: 280 }}>
-                        <Stack direction="row" alignItems="center" spacing={0.5}>
-                          <Typography
-                            variant="body2"
-                            sx={{ wordBreak: "break-all" }}
-                          >
-                            {w.address}
-                          </Typography>
-                          <Tooltip title="Copy">
-                            <IconButton
-                              size="small"
-                              onClick={() => copy(w.address)}
-                            >
-                              <ContentCopyIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      </TableCell>
-
-                      <TableCell>
-                        <Typography variant="caption" color="text.secondary">
-                          {new Date(w.createdAt).toLocaleString()}
-                        </Typography>
-                      </TableCell>
-
-                      <TableCell align="right">
-                        <Stack direction="row" spacing={1} justifyContent="flex-end">
-                          <Button
+                        <TableCell>
+                          <Chip
                             size="small"
-                            variant="contained"
-                            startIcon={<CheckCircleIcon />}
-                            disabled={busy || loading}
-                            onClick={() => approveOne(w._id)}
-                          >
-                            Approve
-                          </Button>
-                          <Button
+                            color="success"
+                            label={`${w.amount} ${w.currency || "USDT"}`}
+                          />
+                        </TableCell>
+
+                        <TableCell>
+                          <Chip
                             size="small"
-                            color="error"
                             variant="outlined"
-                            startIcon={<CancelIcon />}
-                            disabled={busy || loading}
-                            onClick={() => rejectOne(w._id)}
-                          >
-                            Reject
-                          </Button>
-                        </Stack>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                            label={w.chain || "TRC20"}
+                          />
+                        </TableCell>
+
+                        <TableCell sx={{ maxWidth: 450 }}>
+                          <Stack direction="row" alignItems="center" spacing={0.5}>
+                            <Typography
+                              variant="body2"
+                              sx={{ wordBreak: "break-all" }}
+                            >
+                              {w.address}
+                            </Typography>
+                            <Tooltip title="Copy">
+                              <IconButton
+                                size="small"
+                                onClick={() => copy(w.address)}
+                              >
+                                <ContentCopyIcon fontSize="inherit" />
+                              </IconButton>
+                            </Tooltip>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell>
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(w.createdAt).toLocaleString()}
+                          </Typography>
+                        </TableCell>
+
+                        <TableCell align="right">
+                          <Stack direction="row" spacing={1} justifyContent="flex-end">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              startIcon={<CheckCircleIcon />}
+                              disabled={busy || loading}
+                              onClick={() => approveOne(w._id)}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              size="small"
+                              color="error"
+                              variant="outlined"
+                              startIcon={<CancelIcon />}
+                              disabled={busy || loading}
+                              onClick={() => rejectOne(w._id)}
+                            >
+                              Reject
+                            </Button>
+                          </Stack>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            // ---------- Mobile/Tablet Cards ----------
+            <Box>
+              {/* Select all on mobile */}
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                <Checkbox
+                  checked={allOnPageSelected}
+                  indeterminate={selected.size > 0 && !allOnPageSelected}
+                  onChange={toggleAll}
+                />
+                <Typography variant="body2">Select all on page</Typography>
+              </Stack>
+
+              {filtered.map((w) => (
+                <MobileCard key={w._id} w={w} />
+              ))}
+            </Box>
           )}
         </Box>
       </Paper>

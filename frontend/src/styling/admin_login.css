@@ -39,3 +39,88 @@
 .login-form button:hover {
   background: #0056b3;
 }
+
+.fp2-row {
+  margin: 6px 0 10px;
+  text-align: right;
+}
+
+.fp2-link {
+  background: none;
+  border: 0;
+  color: #4ea1ff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.fp2-link:hover {
+  opacity: .85;
+}
+
+.fp2-card {
+  max-width: 520px;
+  margin: 14px auto 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.fp2-title {
+  margin: 0 0 10px;
+}
+
+.fp2-label {
+  font-size: 14px;
+  opacity: .95;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.fp2-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.15);
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.fp2-input::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.fp2-btn {
+  margin-top: 2px;
+}
+
+.fp2-btn-ghost {
+  margin-right: 10px;
+}
+
+.fp2-hint {
+  font-size: 13px;
+  opacity: .9;
+  margin: 6px 0 0;
+}
+
+.fp2-success {
+  margin: 8px 0 12px;
+}
+
+.fp2-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+@media (max-width: 699px) {
+  form.login-form {
+    width: 90% !important;
+  }
+}

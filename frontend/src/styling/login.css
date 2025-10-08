@@ -1,19 +1,19 @@
 :root {
-    --bg: #07142a;
-    /* deep navy background */
-    --panel: #071f34;
-    /* slightly lighter */
-    --muted: #9fb0c6;
-    /* subtitle color */
-    --accent: #3db3ff;
-    /* blue for 'Crypto' and primary button */
-    --accent-2: #2b8fe0;
-    /* Dark Blue */
-    --dark-blue: #04132c;
-    /* Fixed: Removed quotes */
-    --white: #ffffff;
-    --rounded: 12px;
-    --max-width: 100%;
+  --bg: #07142a;
+  /* deep navy background */
+  --panel: #071f34;
+  /* slightly lighter */
+  --muted: #9fb0c6;
+  /* subtitle color */
+  --accent: #3db3ff;
+  /* blue for 'Crypto' and primary button */
+  --accent-2: #2b8fe0;
+  /* Dark Blue */
+  --dark-blue: #04132c;
+  /* Fixed: Removed quotes */
+  --white: #ffffff;
+  --rounded: 12px;
+  --max-width: 100%;
 }
 
 
@@ -76,12 +76,12 @@ form.sign-in-form {
   max-width: 380px;
   width: 100%;
   background-color: #f0f0f0;
-  margin: 5px 0;
-  height: 55px;
+  margin: 4px 0;
+  height: 50px;
   border-radius: 55px;
   display: grid;
-  grid-template-columns: 15% 85%;
-  padding: 0 0.4rem;
+  grid-template-columns: 100% 0%;
+  padding: 0 2rem;
   position: relative;
 }
 
@@ -126,6 +126,7 @@ form.sign-in-form {
 .btn:hover {
   background-color: #4d84e2;
 }
+
 .panels-container {
   position: absolute;
   height: 100%;
@@ -150,6 +151,33 @@ form.sign-in-form {
   z-index: 6;
 }
 
+.react-tel-input .form-control {
+  position: relative;
+  font-size: 14px;
+  letter-spacing: .01rem;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-left: 48px;
+  margin-left: 0;
+  background: transparent !important;
+  border: none !important;
+  border-radius: none !important;
+  line-height: 25px;
+  height: 55px !important;
+  outline: none;
+}
+
+
+.react-tel-input .selected-flag {
+  background: transparent !important;
+  border: none !important;
+}
+
+.react-tel-input .flag-dropdown {
+  background: transparent !important;
+  border: none !important;
+}
+
 .image {
   width: 100%;
   transition: transform 1.1s ease-in-out;
@@ -172,7 +200,7 @@ form.sign-in-form {
 
 .right-panel {
   pointer-events: none;
-  padding: 3rem 12% 2rem 17%;
+  padding: 1rem 12% 1rem 17%;
 }
 
 .panel .content {
@@ -246,11 +274,60 @@ form.sign-in-form {
   pointer-events: all;
 }
 
+/* Password field wrapper for login/signup */
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  padding-right: 42px !important;
+  /* space for the eye */
+}
+
+/* Eye button (generic) */
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  line-height: 0;
+}
+
+.eye-btn:hover {
+  color: #616468;
+}
+
+/* For the forgot panel inputs */
+.fp2-password-wrap {
+  position: relative;
+}
+
+.eye-btn--inside {
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+}
+
+.fp2-password-wrap .fp2-input {
+  padding-right: 42px !important;
+}
+
+
 @media (max-width: 870px) {
   .container {
     min-height: 800px;
     height: 100vh;
   }
+
   .signin-signup {
     width: 100%;
     top: 95%;
@@ -272,12 +349,12 @@ form.sign-in-form {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    padding: 2.5rem 8%;
+    padding: 1.5rem 7%;
     grid-column: 1 / 2;
   }
 
   .right-panel {
-    grid-row: 3 / 4;
+    grid-row: 4 / 4;
   }
 
   .left-panel {
@@ -307,7 +384,7 @@ form.sign-in-form {
 
   .btn.transparent {
     width: 110px;
-    height: 35px;
+    height: 40px;
     font-size: 0.7rem;
   }
 
@@ -323,7 +400,7 @@ form.sign-in-form {
   }
 
   .container.sign-up-mode:before {
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, 104%);
     bottom: 32%;
     right: initial;
   }
@@ -357,9 +434,11 @@ form.sign-in-form {
   .image {
     display: none;
   }
+
   .panel .content {
     padding: 0.5rem 1rem;
   }
+
   .container {
     padding: 1.5rem;
   }
@@ -370,7 +449,7 @@ form.sign-in-form {
   }
 
   .container.sign-up-mode:before {
-    bottom: 22%;
+    bottom: 21%;
     left: 50%;
   }
 }

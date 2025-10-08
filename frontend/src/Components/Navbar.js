@@ -17,7 +17,8 @@ import image from '../assets/Logo.png';
 const pages = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'Login', path: '/register' },
+  { name: 'Contact', path: '/contact' },
+  { name: 'Sign Up', path: '/register' },
 ];
 
 function Navbar() {
@@ -31,7 +32,8 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }} style={{height: "auto",paddingLeft: "0px",
+    paddingRight: "0px"}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
@@ -40,7 +42,7 @@ function Navbar() {
             <picture>
               <source media="(min-width: 699px)" srcSet={image} />
               <source media="(max-width: 698px)" srcSet={image} />
-              <img src={image} alt="Logo" width="80" height="60" />
+              <img src={image} alt="Logo" width="50" height="40" style={{top: "5px",}} />
             </picture>
           </Box>
 
@@ -66,10 +68,10 @@ function Navbar() {
               onClick={(props) => <Slide {...props} direction="down" />}
               PaperProps={{
                 sx: {
-                  mt: "50px",               // Top me AppBar ke neeche space (AppBar height jitna)
+                  mt: "35px",               // Top me AppBar ke neeche space (AppBar height jitna)
                   width: "100%",
-                  height: "calc(50vh - 64px)", // full height minus AppBar
-                  background: "#3f0097cb",
+                  // height: "calc(50vh - 64px)", // full height minus AppBar
+                  background: "#0D1636",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
